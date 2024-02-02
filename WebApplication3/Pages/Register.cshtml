@@ -1,0 +1,92 @@
+﻿@page
+@model WebApplication3.Pages.RegisterModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>Register</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Register.FirstName" class="control-label"></label>
+                <input asp-for="Register.FirstName" class="form-control" />
+                <span asp-validation-for="Register.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Register.LastName" class="control-label"></label>
+                <input asp-for="Register.LastName" class="form-control" />
+                <span asp-validation-for="Register.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Register.Gender" class="control-label"></label>
+                <input asp-for="Register.Gender" class="form-control" />
+                <span asp-validation-for="Register.Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Register.NRIC" class="control-label"></label>
+                <input asp-for="Register.NRIC" class="form-control" />
+                <span asp-validation-for="Register.NRIC" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Register.Email" class="control-label"></label>
+                <input asp-for="Register.Email" class="form-control" />
+                <span asp-validation-for="Register.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Register.Password" class="control-label"></label>
+                <input asp-for="Register.Password" class="form-control" />
+                <span asp-validation-for="Register.Password" class="text-danger"></span>
+                <span id="passwordFeedback" class="valid-feedback">Strong password</span>
+            </div>
+
+            <script>
+                document.getElementById("Register_Password").addEventListener("input", function(passwordInput) {
+                    console.log(passwordInput)
+                                    var password = passwordInput.target.value;
+                    var regex = /@Model.passwordRegex/;
+                    var feedbackElement = document.getElementById("passwordFeedback");
+
+                    if(regex.test(password)) {
+                        feedbackElement.style.display = "inline";
+                    } else {
+                        feedbackElement.style.display = "none";
+                    }
+                })
+            </script>
+
+            <div class="form-group">
+                <label asp-for="Register.ConfirmPassword" class="control-label"></label>
+                <input asp-for="Register.ConfirmPassword" class="form-control" />
+                <span asp-validation-for="Register.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Register.BirthDate" class="control-label"></label>
+                <input asp-for="Register.BirthDate" class="form-control" />
+                <span asp-validation-for="Register.BirthDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Register.Resume" class="control-label"></label>
+                <input accept=".docx,.pdf" asp-for="Register.Resume" class="form-control" />
+                <span asp-validation-for="Register.Resume" class="text-danger"></span>
+                <span asp-validation-for="Register.FileName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Register.WhoAmI" class="control-label"></label>
+                <textarea asp-for="Register.WhoAmI" class="form-control"></textarea>
+                <span asp-validation-for="Register.WhoAmI" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Register" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
