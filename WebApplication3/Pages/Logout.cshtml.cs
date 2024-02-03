@@ -26,12 +26,12 @@ namespace WebApplication3.Pages
             await signInManager.SignOutAsync();
 
             var user = await userManager.FindByIdAsync(userManager.GetUserId(User));
-            //remove sessionID
-            user.SessionID = null;
             //await userManager.UpdateAsync(user);
             //remove all claims
             await userManager.RemoveClaimsAsync(user, await userManager.GetClaimsAsync(user));
             await auditLogService.LogActionAsync(user.Id, user.SessionID!, AuditLog.ActionType.Logout);
+            //remove sessionID
+            user.SessionID = null;
             return RedirectToPage("Index");
         }
         public async Task<IActionResult> OnPostDontLogoutAsync()

@@ -4,6 +4,7 @@
     ViewData["Title"] = "Home";
 }
 @if (@Model.CurrentUser == null) {
+    <!--<script src="https://www.google.com/recaptcha/api.js?render=6LdyYWQpAAAAADzo6PmO3TOVuse_uuDxvYUwlGfA"></script>-->
     <h1>Login</h1>
     <hr />
     <div class="row">
@@ -25,18 +26,17 @@
                         <input class="form-check-input" asp-for="Login.RememberMe" /> @Html.DisplayNameFor(model => model.Login.RememberMe)
                     </label>
                 </div>
+                <!--<div class="g-recaptcha"></div> <button class="g-recaptcha"
+                                                        data-callback="onSubmit"
+                                                        data-action="login">
+                    Login
+                </button>-->
                 <div class="form-group">
                     <input type="submit" value="Login" class="btn btn-primary" />
                 </div>
             </form>
         </div>
     </div>
-
-    @section Scripts {
-    @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        }
-    }
 }
 else{
     <h1>Hi @(Model.CurrentUser.FirstName) @(Model.CurrentUser.LastName)!</h1>

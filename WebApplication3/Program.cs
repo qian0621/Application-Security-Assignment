@@ -50,7 +50,7 @@ builder.Services.ConfigureApplicationCookie(options => {
         var contextSessionID = userPrincipal?.FindFirst("SessionID")?.Value;
         var user = await userManager.FindByIdAsync(userManager.GetUserId(userPrincipal));
 
-        var userSessionID = (await userManager.GetClaimsAsync(user)).First(c => c.Type == "SessionID").Value;
+        var userSessionID = (await userManager.GetClaimsAsync(user)).FirstOrDefault(c => c.Type == "SessionID")?.Value;
         Debug.WriteLine("SessionIDClaim: \n" + contextSessionID ?? "null" + "\n" + userSessionID);
         if (contextSessionID == null) {
             context.RejectPrincipal();
@@ -81,6 +81,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseStatusCodePagesWithRedirects("/errors/{0}");
 
 app.UseRouting();
 

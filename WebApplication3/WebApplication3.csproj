@@ -19,6 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Pages\NewFolder1\" />
+    <Folder Include="Pages\NewFolder\" />
     <Folder Include="wwwroot\NewFolder\" />
   </ItemGroup>
 

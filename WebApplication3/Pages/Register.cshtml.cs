@@ -54,7 +54,7 @@ namespace WebApplication3.Pages
                 LastName = Register.LastName,
                 Gender = Register.Gender,
                 NRIC = dataProtector.Protect(Register.NRIC),  //(Must be encrypted)
-                UserName = Register.Email,
+                UserName = Register.Email,  //defaults to empty string which is not allowed
                 Email = Register.Email,
                 BirthDate = Register.BirthDate,
                 Resume = Path.GetRandomFileName() + Path.GetExtension(Register.Resume.FileName),
