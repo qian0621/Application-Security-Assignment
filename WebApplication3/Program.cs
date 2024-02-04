@@ -1,8 +1,11 @@
+using AspNetCore.ReCaptcha;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using NuGet.Protocol;
 using System.Diagnostics;
 using WebApplication3.Model;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +38,10 @@ builder.Services.AddDataProtection();
 //Audit Logging
 builder.Services.AddScoped<AuditLogService>();
 
+//Recaptcha
+builder.Services.AddReCaptcha(builder.Configuration.GetSection("ReCaptcha"));
+
+
 builder.Services.ConfigureApplicationCookie(options => {
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Set session timeout
     options.SlidingExpiration = true; // Reset expiration timer when active
@@ -43,25 +50,15 @@ builder.Services.ConfigureApplicationCookie(options => {
     options.AccessDeniedPath = "/";
     options.Events.OnValidatePrincipal = async context => {
         HttpContext httpContext = context.HttpContext;
-        IServiceProvider serviceProvider = httpContext.RequestServices;
 
-        var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        var userPrincipal = context.Principal;
-        var contextSessionID = userPrincipal?.FindFirst("SessionID")?.Value;
-        var user = await userManager.FindByIdAsync(userManager.GetUserId(userPrincipal));
-
+        var userManager = httpContext.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
+        var principal = context.Principal;
+        var user = await userManager.FindByIdAsync(userManager.GetUserId(principal));
+        var contextSessionID = principal?.FindFirst("SessionID")?.Value;
         var userSessionID = (await userManager.GetClaimsAsync(user)).FirstOrDefault(c => c.Type == "SessionID")?.Value;
-        Debug.WriteLine("SessionIDClaim: \n" + contextSessionID ?? "null" + "\n" + userSessionID);
-        if (contextSessionID == null) {
-            context.RejectPrincipal();
-            await context.HttpContext.SignOutAsync();
-            return;
-        }
-
-
-        // Check the session ID against the one in the persistent store
-        if (userSessionID != contextSessionID) {
-            // The session ID is different, which means the user logged in elsewhere
+        Debug.WriteLine("SessionIDClaim: \n" + (contextSessionID ?? "null") + "\n" + (userSessionID ?? "null"));
+        if (contextSessionID == null || userSessionID == null || userSessionID != contextSessionID) {
+            // The session ID is different, w) {
             context.RejectPrincipal();
             await httpContext.SignOutAsync();
             return;

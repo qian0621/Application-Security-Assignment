@@ -4,7 +4,7 @@
     ViewData["Title"] = "Home";
 }
 @if (@Model.CurrentUser == null) {
-    <!--<script src="https://www.google.com/recaptcha/api.js?render=6LdyYWQpAAAAADzo6PmO3TOVuse_uuDxvYUwlGfA"></script>-->
+    @using AspNetCore.ReCaptcha
     <h1>Login</h1>
     <hr />
     <div class="row">
@@ -12,27 +12,23 @@
             <form method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Login.Email" class="control-label"></label>
-                    <input asp-for="Login.Email" class="form-control" />
-                    <span asp-validation-for="Login.Email" class="text-danger"></span>
+                    <label asp-for="LoginForm.Email" class="control-label"></label>
+                    <input asp-for="LoginForm.Email" class="form-control" />
+                    <span asp-validation-for="LoginForm.Email" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Login.Password" class="control-label"></label>
-                    <input asp-for="Login.Password" class="form-control" />
-                    <span asp-validation-for="Login.Password" class="text-danger"></span>
+                    <label asp-for="LoginForm.Password" class="control-label"></label>
+                    <input asp-for="LoginForm.Password" class="form-control" />
+                    <span asp-validation-for="LoginForm.Password" class="text-danger"></span>
                 </div>
                 <div class="form-group form-check">
                     <label class="form-check-label">
-                        <input class="form-check-input" asp-for="Login.RememberMe" /> @Html.DisplayNameFor(model => model.Login.RememberMe)
+                        <input class="form-check-input" asp-for="LoginForm.RememberMe" /> @Html.DisplayNameFor(model => model.LoginForm.RememberMe)
                     </label>
                 </div>
-                <!--<div class="g-recaptcha"></div> <button class="g-recaptcha"
-                                                        data-callback="onSubmit"
-                                                        data-action="login">
-                    Login
-                </button>-->
+                @Html.ReCaptcha()
                 <div class="form-group">
-                    <input type="submit" value="Login" class="btn btn-primary" />
+                    <input type="submit" value="Login" class="btn btn-primary"/>
                 </div>
             </form>
         </div>

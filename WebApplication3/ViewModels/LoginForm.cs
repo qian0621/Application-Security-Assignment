@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication3.ViewModels
 {
-    public class Login {
+    public class LoginForm {
         [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }

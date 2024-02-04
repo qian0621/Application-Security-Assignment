@@ -1,16 +1,19 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics;
-using System.Net;
 using System.Security.Claims;
 using WebApplication3.Model;
 using WebApplication3.ViewModels;
+using AspNetCore.ReCaptcha;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using NuGet.Protocol.Plugins;
 
 namespace WebApplication3.Pages
 {
+    [ValidateReCaptcha]
     public class IndexModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> signInManager;
@@ -31,42 +34,9 @@ namespace WebApplication3.Pages
                 .CreateProtector("MySecretKey");
 
         [BindProperty]
-        public Login Login { get; set; } = default!;
-
-        public class MyObject
-        {
-            public bool success { get; set; }
-            // Add other properties if needed, based on the JSON response
-        }
-        /*
-        public bool ValidateCaptcha()
-        {
-            bool result = false;
-
-
-
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(
-                "https://www.google.com/recaptcha/api/siteverify?secret=6LdyYWQpAAAAALLeIDlwE8Tah-__ba7sGkMnMfHs");
-                using (WebResponse wResponse = req.GetResponse())
-                using (StreamReader readStream = new StreamReader(wResponse.GetResponseStream()))
-                {
-                    string jsonResponse = readStream.ReadToEnd();
-
-                    // Using JavaScriptSerializer:
-                    //JavaScriptSerializer js = new JavaScriptSerializer();
-                    //MyObject jsonObject = js.Deserialize<MyObject>(jsonResponse);
-                    //result = Convert.ToBoolean(jsonObject.success);
-
-                    // Or, using System.Text.Json:
-                    MyObject jsonObject = JsonSerializer.Deserialize<MyObject>(jsonResponse);
-                    result = jsonObject.success;
-                }
-
-            return result;
-        }
-        */
+        public LoginForm LoginForm { get; set; } = default!;
         public async Task<IActionResult> OnGetAsync() {
-
+            Debug.WriteLine("Get");
             if (signInManager.IsSignedIn(User)) {
                 Debug.WriteLine("User is signed in");
                 CurrentUser = await userManager.FindByIdAsync(userManager.GetUserId(User));
@@ -79,16 +49,16 @@ namespace WebApplication3.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (ModelState.IsValid && Login != null) {
+            if (ModelState.IsValid && LoginForm != null) {
                 var identityResult = await signInManager.PasswordSignInAsync(
-                    Login.Email,
-                    Login.Password,
-                    Login.RememberMe,
+                    LoginForm.Email,
+                    LoginForm.Password,
+                    LoginForm.RememberMe,
                     true    //Rate Limiting (E.g Account lockout after 3 login failures)
                 );
 //                if (ValidateCaptcha()) {
                     if (identityResult.Succeeded) {
-                        CurrentUser = await userManager.FindByEmailAsync(Login.Email);   //User claim only updates next request
+                        CurrentUser = await userManager.FindByEmailAsync(LoginForm.Email);   //User claim only updates next request
                         var sessionIDClaim = (await userManager.GetClaimsAsync(CurrentUser)).FirstOrDefault(c => c.Type == "SessionID");
                         if (sessionIDClaim == null) {
                             string sessionID = CurrentUser!.setSessionID();
