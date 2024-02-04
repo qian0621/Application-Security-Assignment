@@ -18,10 +18,4 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\NewFolder1\" />
-    <Folder Include="Pages\NewFolder\" />
-    <Folder Include="wwwroot\NewFolder\" />
-  </ItemGroup>
-
 </Project>
