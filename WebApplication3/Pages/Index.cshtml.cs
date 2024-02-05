@@ -7,9 +7,6 @@ using System.Security.Claims;
 using WebApplication3.Model;
 using WebApplication3.ViewModels;
 using AspNetCore.ReCaptcha;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using NuGet.Protocol.Plugins;
 
 namespace WebApplication3.Pages
 {

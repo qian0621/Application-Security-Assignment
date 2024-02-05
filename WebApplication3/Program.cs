@@ -14,7 +14,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AuthDbContext>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
     options.Lockout = new LockoutOptions() {
-        DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5),   //Automatic account recovery after x mins of lockout.
+        DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1),   //Automatic account recovery after x mins of lockout.
         MaxFailedAccessAttempts = 3 //Rate Limiting (E.g Account lockout after 3 login failures)
     };
 })

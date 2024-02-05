@@ -33,6 +33,12 @@
             </form>
         </div>
     </div>
+
+    @section Scripts {
+    @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
 }
 else{
     <h1>Hi @(Model.CurrentUser.FirstName) @(Model.CurrentUser.LastName)!</h1>
