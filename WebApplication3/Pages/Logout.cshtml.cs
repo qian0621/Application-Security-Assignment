@@ -3,26 +3,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApplication3.Model;
 
-namespace WebApplication3.Pages
-{
-    public class LogoutModel : PageModel
-    {
-        private UserManager<ApplicationUser> userManager { get; }
-        private SignInManager<ApplicationUser> signInManager { get; }
-        private AuditLogService auditLogService { get; }
+namespace WebApplication3.Pages {
+    public class LogoutModel : PageModel {
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly AuditLogService auditLogService;
 
         public LogoutModel(
-            UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
             AuditLogService auditLogService
         ) {
-            this.userManager = userManager;
             this.signInManager = signInManager;
+            this.userManager = userManager;
             this.auditLogService = auditLogService;
         }
+
         public void OnGet() { }
-        public async Task<IActionResult> OnPostLogoutAsync()
-        {
+
+        public async Task<IActionResult> OnPostLogoutAsync() {
             await signInManager.SignOutAsync();
 
             var user = await userManager.FindByIdAsync(userManager.GetUserId(User));
@@ -34,8 +33,8 @@ namespace WebApplication3.Pages
             user.SessionID = null;
             return RedirectToPage("Index");
         }
-        public async Task<IActionResult> OnPostDontLogoutAsync()
-        {
+
+        public async Task<IActionResult> OnPostDontLogoutAsync() {
             return RedirectToPage("Index");
         }
     }

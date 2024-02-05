@@ -20,6 +20,7 @@ namespace WebApplication3.Model {
         [DisplayName("Date of Birth")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime BirthDate { get; set; } //DateOnly only avaliable in ef core 8+
+
         public string Resume { get; set; }
 
         [DisplayName("Who Am I")]

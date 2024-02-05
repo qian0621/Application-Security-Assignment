@@ -1,15 +1,12 @@
-﻿namespace WebApplication3.Model
-{
-    public class AuditLogService
-    {
+﻿namespace WebApplication3.Model {
+    public class AuditLogService {
         private readonly AuthDbContext _context;
 
         public AuditLogService(AuthDbContext context) {
             _context = context;
         }
 
-        public async Task LogActionAsync(string userID, string sessionID, AuditLog.ActionType action)
-        {
+        public async Task LogActionAsync(string userID, string sessionID, AuditLog.ActionType action) {
             var auditRecord = new AuditLog {
                 UserID = userID,
                 SessionID = sessionID,
