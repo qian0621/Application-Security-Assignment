@@ -1,5 +1,4 @@
-﻿namespace WebApplication3.Model
-{
+﻿namespace WebApplication3.Model {
     public class AuditLog {
         public int ID { get; set; }
         public string UserID { get; set; }

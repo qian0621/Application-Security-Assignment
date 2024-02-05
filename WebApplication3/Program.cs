@@ -1,16 +1,15 @@
 using AspNetCore.ReCaptcha;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using NuGet.Protocol;
 using System.Diagnostics;
 using WebApplication3.Model;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+//save user data in database
 builder.Services.AddDbContext<AuthDbContext>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
     options.Lockout = new LockoutOptions() {
@@ -43,10 +42,10 @@ builder.Services.AddReCaptcha(builder.Configuration.GetSection("ReCaptcha"));
 
 
 builder.Services.ConfigureApplicationCookie(options => {
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Set session timeout
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // session timeout
     options.SlidingExpiration = true; // Reset expiration timer when active
-    options.Cookie.HttpOnly = true; // Enhance security by limiting access to the cookie from client-side scripts
-    options.LoginPath = "/";    //Route to homepage/login page after session timeout.
+    options.Cookie.HttpOnly = true; // limit access from client-side scripts
+    options.LoginPath = "/";    //Route to homepage/login page after session timeout
     options.AccessDeniedPath = "/";
     options.Events.OnValidatePrincipal = async context => {
         HttpContext httpContext = context.HttpContext;
@@ -58,7 +57,7 @@ builder.Services.ConfigureApplicationCookie(options => {
         var userSessionID = (await userManager.GetClaimsAsync(user)).FirstOrDefault(c => c.Type == "SessionID")?.Value;
         Debug.WriteLine("SessionIDClaim: \n" + (contextSessionID ?? "null") + "\n" + (userSessionID ?? "null"));
         if (contextSessionID == null || userSessionID == null || userSessionID != contextSessionID) {
-            // The session ID is different, w) {
+            // The session ID is different, so logged in elsewhere
             context.RejectPrincipal();
             await httpContext.SignOutAsync();
             return;
@@ -69,9 +68,8 @@ builder.Services.ConfigureApplicationCookie(options => {
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
+if (!app.Environment.IsDevelopment()) {
+    app.UseExceptionHandler("/errors");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

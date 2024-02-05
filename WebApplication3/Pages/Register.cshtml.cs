@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -7,49 +6,37 @@ using System.Security.Claims;
 using WebApplication3.Model;
 using WebApplication3.ViewModels;
 
-namespace WebApplication3.Pages
-{
-    public class RegisterModel : PageModel
-    {
-        private UserManager<ApplicationUser> userManager { get; }
-        private SignInManager<ApplicationUser> signInManager { get; }
-        private AuditLogService auditLogService { get; }
+namespace WebApplication3.Pages {
+    public class RegisterModel : PageModel {
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly AuditLogService auditLogService;
 
         public RegisterModel(
-            UserManager<ApplicationUser> userManager, 
             SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager, 
             AuditLogService auditLogService
         ) {
-            this.userManager = userManager;
             this.signInManager = signInManager;
+            this.userManager = userManager;
             this.auditLogService = auditLogService;
         }
 
+        private IDataProtector dataProtector = DataProtectionProvider.Create("EncryptData")
+                .CreateProtector("MySecretKey");
+
         public string passwordRegex { get; } = Register.passwordRegex;
-
-        private int maxSize = 1024 * 1024;
-
-        public IActionResult OnGet()
-        {
-            return Page();
-        }
 
         [BindProperty]
         public Register Register { get; set; } = default!;
+
+        private int maxSize = 1024 * 1024;
+
+        public IActionResult OnGet() => Page();
         
-
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
-        {
-          if (!ModelState.IsValid || Register == null)
-            {
-                return Page();
-            }
-
-            var dataProtector = DataProtectionProvider.Create("EncryptData")
-                .CreateProtector("MySecretKey");
-            var user = new ApplicationUser()
-            {
+        public async Task<IActionResult> OnPostAsync() {
+          if (!ModelState.IsValid || Register == null) { return Page(); }
+            var user = new ApplicationUser() {
                 FirstName = Register.FirstName,
                 LastName = Register.LastName,
                 Gender = Register.Gender,
@@ -71,8 +58,7 @@ namespace WebApplication3.Pages
                 await auditLogService.LogActionAsync(user.Id, user.SessionID!, AuditLog.ActionType.Login);
                 return RedirectToPage("Index");
             }
-            foreach (var error in result.Errors)
-            {
+            foreach (var error in result.Errors) {
                 ModelState.AddModelError("", error.Description);
                 Console.WriteLine(error.Description);
             }
